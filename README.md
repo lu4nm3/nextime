@@ -1,6 +1,6 @@
 # Nextime
 
-Nextime is a library for Scala that helps you figure out the "next time" something should occur by provding an easy and
+Nextime is a library for Scala that helps you figure out the "next time" something should occur by providing an easy and
 type safe way to work with cron expressions.
 
 ## Guide
