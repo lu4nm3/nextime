@@ -133,4 +133,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.gitignore.io/api/osx,windows,linux,scala,intellij,sbt
+# PGP Keys
+local.*
+
+# End of https://www.gitignore.io/api/osx,windows,linux,scala,intellij,sbt,gpg

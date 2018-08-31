@@ -1,0 +1,53 @@
+sudo: false
+
+language: scala
+
+jdk: oraclejdk8
+
+before_cache:
+- find $HOME/.sbt -name "*.lock" | xargs rm
+- find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
+cache:
+  directories:
+  - "$HOME/.ivy2/cache"
+  - "$HOME/.sbt"
+
+before_install:
+# Ensure git tags are always fetched so sbt-dynver can pick up correct version
+- git fetch --tags
+# Extract GPG keys only when
+- if [ $TRAVIS_PULL_REQUEST = "false" ]; then
+  openssl aes-256-cbc -K $encrypted_624c4e31574a_key -iv $encrypted_624c4e31574a_iv -in travis/secrets.tar.enc -out travis/local.secrets.tar -d;
+  tar xv -C travis -f travis/local.secrets.tar;
+  fi
+
+scala:
+#- 2.11.11
+- 2.12.2
+
+#script:
+#- sbt ++$TRAVIS_SCALA_VERSION clean compile test package
+
+stages:
+- name: build
+- name: publish
+  if: (branch = master) AND (type = push) AND (tag IS blank)
+- name: release
+  if: tag IS present
+
+jobs:
+  include:
+  - stage: build
+    script: sbt ++$TRAVIS_SCALA_VERSION clean compile test package
+  - stage: publish
+    script: sbt ++$TRAVIS_SCALA_VERSION publish
+  - stage: release
+    script: sbt ++$TRAVIS_SCALA_VERSION publishSigned sonatypeRelease
+
+#after_success:
+#- if [ $TRAVIS_PULL_REQUEST = 'false' ]; then sbt ++$TRAVIS_SCALA_VERSION releaseEarly;
+#  fi
+
+#deploy:
+#  provider: script
+
