@@ -1,5 +1,4 @@
 lazy val nextime = (project in file("."))
-
   .settings(
     scalacOptions := Seq("-feature", "-Ypartial-unification"),
     scalaVersion := "2.12.1"//,
@@ -33,12 +32,12 @@ lazy val nextime = (project in file("."))
       sys.env.getOrElse("SONATYPE_USERNAME", ""),
       sys.env.getOrElse("SONATYPE_PASSWORD", "")
     ),
-    publishTo := sonatypePublishTo.value
+    publishTo := sonatypePublishTo.value,
 //    isSnapshot := version.value endsWith "SNAPSHOT",
-//    publishTo := Some(
-//      if (isSnapshot.value) Opts.resolver.sonatypeSnapshots
-//      else Opts.resolver.sonatypeStaging
-//    )
+    publishTo := Some(
+      if (isSnapshot.value) Opts.resolver.sonatypeSnapshots
+      else Opts.resolver.sonatypeStaging
+      )
   )
   .settings(
 //    credentials += Credentials(
