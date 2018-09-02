@@ -47,7 +47,7 @@ lazy val nextime = (project in file("."))
 //      sys.env.getOrElse("PGP_PASSPHRASE", "")
 //    ),
     useGpg := false,
-    usePgpKeyHex("B796B8AFE484EC92"),
+    usePgpKeyHex("F48E42FA438D1910"),
     pgpPublicRing := baseDirectory.value / "travis" / "local.pubring.asc",
     pgpSecretRing := baseDirectory.value / "travis" / "local.secring.asc",
     pgpPassphrase := sys.env.get("PGP_PASSPHRASE").map(_.toArray)
