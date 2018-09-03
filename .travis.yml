@@ -40,7 +40,7 @@ jobs:
   - stage: build
     script: sbt ++$TRAVIS_SCALA_VERSION clean compile test package
   - stage: publish
-    script: sbt ++$TRAVIS_SCALA_VERSION publishSigned
+    script: sbt ++$TRAVIS_SCALA_VERSION publish
   - stage: release
     script: sbt ++$TRAVIS_SCALA_VERSION publishSigned sonatypeRelease
 

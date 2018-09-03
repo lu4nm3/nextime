@@ -1,3 +1,5 @@
+val ReleaseTag = """^v([\d\.]+)$""".r
+
 lazy val nextime = (project in file("."))
   .settings(
     scalacOptions := Seq("-feature", "-Ypartial-unification"),
@@ -32,7 +34,11 @@ lazy val nextime = (project in file("."))
       sys.env.getOrElse("SONATYPE_USERNAME", ""),
       sys.env.getOrElse("SONATYPE_PASSWORD", "")
     ),
-    publishTo := sonatypePublishTo.value
+    publishTo := sonatypePublishTo.value,
+    git.gitTagToVersionNumber := {
+      case ReleaseTag(v) => Some(v)
+      case _ => None
+    }
 //    isSnapshot := version.value endsWith "SNAPSHOT",
 //    publishTo := Some(
 //      if (isSnapshot.value) Opts.resolver.sonatypeSnapshots
