@@ -1,10 +1,21 @@
-val ReleaseTag = """^v([\d\.]+)$""".r
+lazy val scala211Version      = "2.11.12"
+lazy val scala212Version      = "2.12.6"
 
 lazy val nextime = (project in file("."))
   .settings(
-    scalacOptions := Seq("-feature", "-Ypartial-unification"),
-    scalaVersion := "2.12.1"//,
-//    version := "0.0.1"
+    scalacOptions ++= (
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, n)) if n <= 11 => Seq(
+          "-Ypartial-unification"              // Enable partial unification in type constructor inference
+        )
+        case _ => Seq(
+          "-feature",                          // Emit warning and location for usages of features that should be imported explicitly.
+          "-Ypartial-unification"              // Enable partial unification in type constructor inference
+        )
+      }
+    ),
+    scalaVersion := scala212Version,
+    crossScalaVersions := Seq(scala211Version, scalaVersion.value)
   )
   .settings(
     name := "nextime",
@@ -20,11 +31,6 @@ lazy val nextime = (project in file("."))
         url = url("https://kleisli.io")
       )
     ),
-//    scmInfo := Some(ScmInfo(
-//      url("https://github.com/lu4nm3/nextime"),
-//      "scm:git:https://github.com/lu4nm3/nextime.git",
-//      Some(s"scm:git:git@github.com:lu4nm3/nextime.git")
-//    )),
     publishMavenStyle := true
   )
   .settings(
@@ -34,24 +40,9 @@ lazy val nextime = (project in file("."))
       sys.env.getOrElse("SONATYPE_USERNAME", ""),
       sys.env.getOrElse("SONATYPE_PASSWORD", "")
     ),
-    publishTo := sonatypePublishTo.value,
-    git.gitTagToVersionNumber := {
-      case ReleaseTag(v) => Some(v)
-      case _ => None
-    }
-//    isSnapshot := version.value endsWith "SNAPSHOT",
-//    publishTo := Some(
-//      if (isSnapshot.value) Opts.resolver.sonatypeSnapshots
-//      else Opts.resolver.sonatypeStaging
-//    )
+    publishTo := sonatypePublishTo.value
   )
   .settings(
-//    credentials += Credentials(
-//      "PGP Secret Key",
-//      "pgp",
-//      "sbt",
-//      sys.env.getOrElse("PGP_PASSPHRASE", "")
-//    ),
     useGpg := false,
     usePgpKeyHex("F48E42FA438D1910"),
     pgpPublicRing := baseDirectory.value / "travis" / "local.pubring.asc",
