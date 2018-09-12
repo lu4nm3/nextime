@@ -22,10 +22,10 @@ before_install:
   fi
 
 stages:
-- build
-- publish
+- name: build
+- name: publish
   if: (branch = master) AND (type = push) AND (tag IS blank)
-- release
+- name: release
   if: tag IS present
 
 jobs:
