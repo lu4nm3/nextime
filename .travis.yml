@@ -5,8 +5,8 @@ language: scala
 jdk: oraclejdk8
 
 before_cache:
-- find $HOME/.sbt -name "*.lock" | xargs rm
-- find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
+- find $HOME/.sbt -name "*.lock" -print -delete
+- find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
 cache:
   directories:
   - "$HOME/.ivy2/cache"
@@ -31,19 +31,19 @@ stages:
 jobs:
   include:
   - stage: build
-    scala: 2.11.12
+    env: TRAVIS_SCALA_VERSION=2.11.12
     script: sbt ++$TRAVIS_SCALA_VERSION clean compile test
-  - scala: 2.12.6
+  - env: TRAVIS_SCALA_VERSION=2.12.6
     script: sbt ++$TRAVIS_SCALA_VERSION clean compile test
 
   - stage: publish
-    scala: 2.11.12
+    env: TRAVIS_SCALA_VERSION=2.11.12
     script: sbt ++$TRAVIS_SCALA_VERSION publishSigned
-  - scala: 2.12.6
+  - env: TRAVIS_SCALA_VERSION=2.12.6
     script: sbt ++$TRAVIS_SCALA_VERSION publishSigned
 
   - stage: release
-    scala: 2.11.12
+    env: TRAVIS_SCALA_VERSION=2.11.12
     script: sbt ++$TRAVIS_SCALA_VERSION sonatypeRelease
-  - scala: 2.12.6
+  - env: TRAVIS_SCALA_VERSION=2.12.6
     script: sbt ++$TRAVIS_SCALA_VERSION sonatypeRelease
