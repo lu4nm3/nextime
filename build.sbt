@@ -41,7 +41,7 @@ lazy val nextime = (project in file("."))
       sys.env.getOrElse("SONATYPE_PASSWORD", "")
     ),
     publishTo := Some(
-      if (isSnapshot.value) Opts.resolver.sonatypeSnapshots
+      if (version.value.endsWith("-SNAPSHOT")) Opts.resolver.sonatypeSnapshots
       else Opts.resolver.sonatypeStaging
     )
   )
