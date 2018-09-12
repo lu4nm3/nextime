@@ -38,12 +38,12 @@ jobs:
 
   - stage: publish
     scala: 2.11.12
-    script: sbt ++$TRAVIS_SCALA_VERSION publishSigned
+    script: sbt ++$TRAVIS_SCALA_VERSION publish
   - scala: 2.12.6
-    script: sbt ++$TRAVIS_SCALA_VERSION publishSigned
+    script: sbt ++$TRAVIS_SCALA_VERSION publish
 
   - stage: release
     scala: 2.11.12
-    script: sbt ++$TRAVIS_SCALA_VERSION sonatypeRelease
+    script: sbt ++$TRAVIS_SCALA_VERSION publishSigned sonatypeRelease
   - scala: 2.12.6
-    script: sbt ++$TRAVIS_SCALA_VERSION sonatypeRelease
+    script: sbt ++$TRAVIS_SCALA_VERSION publishSigned sonatypeRelease
