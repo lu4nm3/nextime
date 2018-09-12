@@ -24,26 +24,26 @@ before_install:
 stages:
 - name: build
 - name: publish
-  if: type = push
+  if: (branch = master) AND (type = push) AND (tag IS blank)
 - name: release
-  if: tag IS present
+  if: (branch = master) AND (tag IS present)
 
 jobs:
   include:
   - stage: build
-    env: TRAVIS_SCALA_VERSION=2.11.12
+    scala: 2.11.12
     script: sbt ++$TRAVIS_SCALA_VERSION clean compile test
-  - env: TRAVIS_SCALA_VERSION=2.12.6
+  - scala: 2.12.6
     script: sbt ++$TRAVIS_SCALA_VERSION clean compile test
 
   - stage: publish
-    env: TRAVIS_SCALA_VERSION=2.11.12
+    scala: 2.11.12
     script: sbt ++$TRAVIS_SCALA_VERSION publishSigned
-  - env: TRAVIS_SCALA_VERSION=2.12.6
+  - scala: 2.12.6
     script: sbt ++$TRAVIS_SCALA_VERSION publishSigned
 
   - stage: release
-    env: TRAVIS_SCALA_VERSION=2.11.12
-    script: sbt ++$TRAVIS_SCALA_VERSION sonatypeRelease
-  - env: TRAVIS_SCALA_VERSION=2.12.6
-    script: sbt ++$TRAVIS_SCALA_VERSION sonatypeRelease
+    scala: 2.11.12
+    script: sbt ++$TRAVIS_SCALA_VERSION publishSigned sonatypeRelease
+  - scala: 2.12.6
+    script: sbt ++$TRAVIS_SCALA_VERSION publishSigned sonatypeRelease
