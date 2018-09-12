@@ -21,12 +21,7 @@ before_install:
   tar xv -C travis -f travis/local.secrets.tar;
   fi
 
-scala:
-- 2.11.12
-- 2.12.6
-
 stages:
-- name: build
 - name: publish
   if: (branch = master) AND (type = push) AND (tag IS blank)
 - name: release
@@ -35,8 +30,19 @@ stages:
 jobs:
   include:
   - stage: build
+    scala: 2.11.12
     script: sbt ++$TRAVIS_SCALA_VERSION clean compile test
+  - scala: 2.12.6
+    script: sbt ++$TRAVIS_SCALA_VERSION clean compile test
+
   - stage: publish
+    scala: 2.11.12
     script: sbt ++$TRAVIS_SCALA_VERSION publishSigned
+  - scala: 2.12.6
+    script: sbt ++$TRAVIS_SCALA_VERSION publishSigned
+
   - stage: release
+    scala: 2.11.12
+    script: sbt ++$TRAVIS_SCALA_VERSION publishSigned sonatypeRelease
+  - scala: 2.12.6
     script: sbt ++$TRAVIS_SCALA_VERSION publishSigned sonatypeRelease
