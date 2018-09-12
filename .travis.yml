@@ -34,13 +34,16 @@ jobs:
     scala: 2.11.12
     script: sbt ++$TRAVIS_SCALA_VERSION clean compile test
   - scala: 2.12.6
+    script: sbt ++$TRAVIS_SCALA_VERSION clean compile test
 
   - stage: publish
     scala: 2.11.12
     script: sbt ++$TRAVIS_SCALA_VERSION publishSigned
   - scala: 2.12.6
+    script: sbt ++$TRAVIS_SCALA_VERSION publishSigned
 
   - stage: release
     scala: 2.11.12
     script: sbt ++$TRAVIS_SCALA_VERSION publishSigned sonatypeRelease
   - scala: 2.12.6
+    script: sbt ++$TRAVIS_SCALA_VERSION publishSigned sonatypeRelease
