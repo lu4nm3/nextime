@@ -26,7 +26,7 @@ stages:
 - name: publish
   if: (branch = master) AND (type = push) AND (tag IS blank)
 - name: release
-  if: (branch = master) AND (tag IS present)
+  if: (type != pull_request) AND (tag IS present)
 
 jobs:
   include:
