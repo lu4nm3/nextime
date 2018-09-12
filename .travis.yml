@@ -24,7 +24,7 @@ before_install:
 stages:
 - name: build
 - name: publish
-  if: (branch = master) AND (type = push)
+  if: type = push
 - name: release
   if: tag IS present
 
