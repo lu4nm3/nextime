@@ -40,7 +40,10 @@ lazy val nextime = (project in file("."))
       sys.env.getOrElse("SONATYPE_USERNAME", ""),
       sys.env.getOrElse("SONATYPE_PASSWORD", "")
     ),
-    publishTo := sonatypePublishTo.value
+    publishTo := Some(
+      if (isSnapshot.value) Opts.resolver.sonatypeSnapshots
+      else Opts.resolver.sonatypeStaging
+    )
   )
   .settings(
     useGpg := false,
