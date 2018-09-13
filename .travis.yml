@@ -45,6 +45,6 @@ jobs:
 
   - stage: release
     scala: 2.11.12
-    script: sbt ++$TRAVIS_SCALA_VERSION publishSigned sonatypeRelease
+    script: sbt ++$TRAVIS_SCALA_VERSION sonatypeRelease
   - scala: 2.12.6
-    script: sbt ++$TRAVIS_SCALA_VERSION publishSigned sonatypeRelease
+    script: sbt ++$TRAVIS_SCALA_VERSION sonatypeRelease
