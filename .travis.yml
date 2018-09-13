@@ -22,7 +22,7 @@ before_install:
   fi
 
 stages:
-- name: build
+- name: test
   if: tag IS blank
 - name: publish
   if: (branch = master) AND (type = push) AND (tag IS blank)
