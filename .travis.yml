@@ -23,6 +23,7 @@ before_install:
 
 stages:
 - name: build
+  if: tag IS blank
 - name: publish
   if: (branch = master) AND (type = push) AND (tag IS blank)
 - name: release
@@ -38,9 +39,9 @@ jobs:
 
   - stage: publish
     scala: 2.11.12
-    script: sbt ++$TRAVIS_SCALA_VERSION publish
+    script: sbt ++$TRAVIS_SCALA_VERSION publishSigned
   - scala: 2.12.6
-    script: sbt ++$TRAVIS_SCALA_VERSION publish
+    script: sbt ++$TRAVIS_SCALA_VERSION publishSigned
 
   - stage: release
     scala: 2.11.12
