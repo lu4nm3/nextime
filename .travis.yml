@@ -31,11 +31,11 @@ stages:
 
 jobs:
   include:
-  - stage: build
+  - stage: test
     scala: 2.11.12
-    script: sbt ++$TRAVIS_SCALA_VERSION clean compile test
+    script: sbt ++$TRAVIS_SCALA_VERSION test
   - scala: 2.12.6
-    script: sbt ++$TRAVIS_SCALA_VERSION clean compile test
+    script: sbt ++$TRAVIS_SCALA_VERSION test
 
   - stage: publish
     scala: 2.11.12
@@ -44,7 +44,4 @@ jobs:
     script: sbt ++$TRAVIS_SCALA_VERSION publishSigned
 
   - stage: release
-    scala: 2.11.12
-    script: sbt ++$TRAVIS_SCALA_VERSION sonatypeRelease
-  - scala: 2.12.6
-    script: sbt ++$TRAVIS_SCALA_VERSION sonatypeRelease
+    script: sbt sonatypeReleaseAll
