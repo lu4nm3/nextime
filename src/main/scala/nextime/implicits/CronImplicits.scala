@@ -1,8 +1,6 @@
 package nextime
 package implicits
 
-import Cron.Maybe
-
 trait CronImplicits {
 
   implicit class CronInterpolator(val sc: StringContext) {

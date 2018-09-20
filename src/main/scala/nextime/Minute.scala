@@ -2,7 +2,7 @@ package nextime
 
 import validation.{Rule, Violation}
 
-sealed abstract case class Minute(parts: List[MinutePart]) extends MultiPartExpression
+sealed abstract case class Minute(parts: List[MinutePart]) extends MultipartExpression
 
 object Minute {
   implicit val bounds: Bounds = Bounds(0, 59)

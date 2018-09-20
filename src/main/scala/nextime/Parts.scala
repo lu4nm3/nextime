@@ -20,31 +20,6 @@ trait Parts {
 
   sealed trait YearPart extends PartExpression
 
-  final case class Value(value: Int)
-    extends IncrementPart
-      with SecondPart
-      with MinutePart
-      with HourPart
-      with DayOfMonthPart
-      with MonthPart
-      with DayOfWeekPart
-      with YearPart {
-    def mkString: String = value.toString
-  }
-
-  final case class Range(lower: Value,
-                         upper: Value)
-    extends IncrementPart
-      with SecondPart
-      with MinutePart
-      with HourPart
-      with DayOfMonthPart
-      with MonthPart
-      with DayOfWeekPart
-      with YearPart {
-    def mkString: String = s"${lower.mkString}-${upper.mkString}"
-  }
-
   case object All
     extends IncrementPart
       with SecondPart
@@ -57,8 +32,31 @@ trait Parts {
     def mkString: String = "*"
   }
 
-  final case class Increment(bound: Option[IncrementPart],
-                             increment: Value)
+  final case class Value(value: Int)
+    extends IncrementPart
+      with SecondPart
+      with MinutePart
+      with HourPart
+      with DayOfMonthPart
+      with MonthPart
+      with DayOfWeekPart
+      with YearPart {
+    def mkString: String = value.toString
+  }
+
+  final case class Range(lower: Value, upper: Value)
+    extends IncrementPart
+      with SecondPart
+      with MinutePart
+      with HourPart
+      with DayOfMonthPart
+      with MonthPart
+      with DayOfWeekPart
+      with YearPart {
+    def mkString: String = s"${lower.mkString}-${upper.mkString}"
+  }
+
+  final case class Increment(bound: Option[IncrementPart], increment: Value)
     extends SecondPart
       with MinutePart
       with HourPart

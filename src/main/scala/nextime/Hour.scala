@@ -2,7 +2,7 @@ package nextime
 
 import validation.{Rule, Violation}
 
-sealed abstract case class Hour(parts: List[HourPart]) extends MultiPartExpression
+sealed abstract case class Hour(parts: List[HourPart]) extends MultipartExpression
 
 object Hour {
   implicit val bounds: Bounds = Bounds(0, 23)

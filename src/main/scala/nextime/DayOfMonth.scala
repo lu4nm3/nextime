@@ -2,7 +2,7 @@ package nextime
 
 import validation.{Rule, Violation}
 
-sealed abstract case class DayOfMonth(parts: List[DayOfMonthPart]) extends MultiPartExpression
+sealed abstract case class DayOfMonth(parts: List[DayOfMonthPart]) extends MultipartExpression
 
 object DayOfMonth {
   implicit val bounds: Bounds = Bounds(1, 31)

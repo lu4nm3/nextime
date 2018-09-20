@@ -9,13 +9,15 @@ trait ValuePartImplicits {
   implicit def valueToInt(value: Value): Int = value.value
 
   implicit class ValueOps[A](value: A)(implicit f: A => Value) {
-    def -/-(increment: Value): Increment = Increment(Some(f(value)), increment)
+    def ~-(upper: Value): Range = Range(value, upper)
+
+    def ~/(increment: Value): Increment = Increment(Some(f(value)), increment)
 
     def L: LastDayOfMonth = LastDayOfMonth(f(value))
 
-    def -#-(occurrenceInMonth: Value): NthXDayOfMonth = NthXDayOfMonth(value, occurrenceInMonth)
-
     def W: Weekday = Weekday(f(value))
+
+    def ~#(occurrenceInMonth: Value): NthXDayOfMonth = NthXDayOfMonth(value, occurrenceInMonth)
   }
 
 }

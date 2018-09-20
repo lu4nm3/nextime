@@ -12,8 +12,8 @@ import scala.collection.immutable.SortedSet
 class IntervalsSpec extends WordSpec {
   implicit val dateTime: DateTime = date(2018, 1, 1, 0, 0, 0)
 
-  implicit def subExpressionInterval(implicit dateTime: DateTime): Interval[MultiPartExpression] = new Interval[MultiPartExpression] {
-    override def interval(subExpression: MultiPartExpression): SortedSet[Int] = subExpression match {
+  implicit def subExpressionInterval(implicit dateTime: DateTime): Interval[MultipartExpression] = new Interval[MultipartExpression] {
+    override def interval(subExpression: MultipartExpression): SortedSet[Int] = subExpression match {
       case seconds@Second(_) => secondsInterval.interval(seconds)
       case minutes@Minute(_) => minutesInterval.interval(minutes)
       case hours@Hour(_) => hoursInterval.interval(hours)
@@ -24,7 +24,7 @@ class IntervalsSpec extends WordSpec {
     }
   }
 
-  def assertInterval(subExpression: Either[Violation, MultiPartExpression], expectedIntervals: SortedSet[Int])(implicit dateTime: DateTime) = {
+  def assertInterval(subExpression: Either[Violation, MultipartExpression], expectedIntervals: SortedSet[Int])(implicit dateTime: DateTime) = {
     assertResult(expectedIntervals)(subExpression.right.get.interval)
   }
 

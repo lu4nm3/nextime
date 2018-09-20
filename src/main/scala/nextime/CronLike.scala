@@ -15,7 +15,7 @@ trait CronLike {
 
   def year: Year
 
-  protected def hasNoValue(subExpression: MultiPartExpression): Boolean = {
+  protected def hasNoValue(subExpression: MultipartExpression): Boolean = {
     subExpression.parts.exists {
       case NoValue => true
       case _ => false

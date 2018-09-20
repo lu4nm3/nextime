@@ -1,0 +1,4 @@
+- push version change from vX.Y.Z-SNAPSHOT to vX.Y.Z
+- this will trigger publish to staging repo in maven
+- create new tag for vX.Y.Z and push it
+- this will trigger a release using the artifacts that were previously published to staging repo

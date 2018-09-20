@@ -2,7 +2,7 @@ package nextime
 
 import validation.{Rule, Violation}
 
-sealed abstract case class Year(parts: List[YearPart]) extends MultiPartExpression
+sealed abstract case class Year(parts: List[YearPart]) extends MultipartExpression
 
 object Year {
   implicit val bounds: Bounds = Bounds(1979, 2099)

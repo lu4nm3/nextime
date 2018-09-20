@@ -19,7 +19,6 @@ sealed abstract case class Cron(second: Second,
                                 year: Year) extends Expression with CronLike with NextTime with PreviousTime
 
 object Cron {
-  type Maybe[A] = Either[Violation, A]
   type ValidatedMaybe[A] = ValidatedNel[Violation, A]
 
   def apply(cronExpression: String): Either[Violation, Cron] = {
@@ -168,7 +167,7 @@ object Cron {
     }
   }
 
-  private def hasNoValue(subExpression: MultiPartExpression): Boolean = {
+  private def hasNoValue(subExpression: MultipartExpression): Boolean = {
     subExpression.parts.exists {
       case NoValue => true
       case _ => false
