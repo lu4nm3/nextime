@@ -1,8 +1,7 @@
 package nextime
 package time
 
-import intervals._
-import nextime.validation.Violation
+import nextime.time.intervals._
 import org.joda.time.DateTime
 import org.scalatest.Matchers._
 import org.scalatest.WordSpec

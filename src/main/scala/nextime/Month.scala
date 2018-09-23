@@ -1,6 +1,6 @@
 package nextime
 
-import validation.{Rule, Violation}
+import validation.Rule
 
 sealed abstract case class Month(parts: List[MonthPart]) extends MultipartExpression
 
@@ -22,5 +22,8 @@ object Month {
 
   def unsafe(head: MonthPart, tail: MonthPart*): Month = unsafe(head :: tail.toList)
 
-  def unsafe(parts: List[MonthPart]): Month = apply(parts).right.get
+  def unsafe(parts: List[MonthPart]): Month = apply(parts) match {
+    case Right(month) => month
+    case Left(violation) => throw violation
+  }
 }

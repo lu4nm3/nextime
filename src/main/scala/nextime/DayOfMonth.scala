@@ -1,15 +1,13 @@
 package nextime
 
-import validation.{Rule, Violation}
+import validation.Rule
 
 sealed abstract case class DayOfMonth(parts: List[DayOfMonthPart]) extends MultipartExpression
 
 object DayOfMonth {
   implicit val bounds: Bounds = Bounds(1, 31)
 
-  def apply(head: DayOfMonthPart, tail: DayOfMonthPart*): Either[Violation, DayOfMonth] = {
-    apply(head :: tail.toList)
-  }
+  def apply(head: DayOfMonthPart, tail: DayOfMonthPart*): Either[Violation, DayOfMonth] = apply(head :: tail.toList)
 
   def apply(parts: List[DayOfMonthPart]): Either[Violation, DayOfMonth] = {
     if (parts.isEmpty) {
@@ -24,5 +22,8 @@ object DayOfMonth {
 
   def unsafe(head: DayOfMonthPart, tail: DayOfMonthPart*): DayOfMonth = unsafe(head :: tail.toList)
 
-  def unsafe(parts: List[DayOfMonthPart]): DayOfMonth = apply(parts).right.get
+  def unsafe(parts: List[DayOfMonthPart]): DayOfMonth = apply(parts) match {
+    case Right(dayOfMonth) => dayOfMonth
+    case Left(violation) => throw violation
+  }
 }

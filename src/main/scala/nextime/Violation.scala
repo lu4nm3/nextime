@@ -1,5 +1,4 @@
 package nextime
-package validation
 
 import io.circe.syntax._
 import io.circe.{Encoder, Json}
@@ -7,12 +6,14 @@ import io.circe.{Encoder, Json}
 import scala.collection.mutable.ListBuffer
 import scala.language.implicitConversions
 
-sealed trait Violation {
-  def mkString: String = this.asJson.spaces4
+sealed trait Violation extends Throwable {
+  def mkString: String = s"\n${this.asJson.spaces4}"
 
   def msg: String
 
   def causes: List[Violation]
+
+  override def getMessage: String = mkString
 }
 
 object Violation {

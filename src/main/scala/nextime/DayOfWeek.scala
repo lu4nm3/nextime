@@ -1,6 +1,6 @@
 package nextime
 
-import validation.{Rule, Violation}
+import validation.Rule
 
 sealed abstract case class DayOfWeek(parts: List[DayOfWeekPart]) extends MultipartExpression
 
@@ -22,5 +22,8 @@ object DayOfWeek {
 
   def unsafe(head: DayOfWeekPart, tail: DayOfWeekPart*): DayOfWeek = unsafe(head :: tail.toList)
 
-  def unsafe(parts: List[DayOfWeekPart]): DayOfWeek = apply(parts).right.get
+  def unsafe(parts: List[DayOfWeekPart]): DayOfWeek = apply(parts) match {
+    case Right(dayOfWeek) => dayOfWeek
+    case Left(violation) => throw violation
+  }
 }

@@ -1,5 +1,7 @@
 package nextime.validation
 
+import nextime.Violation
+
 trait Rule[A] {
   def violations(a: A): Vector[Violation]
 }

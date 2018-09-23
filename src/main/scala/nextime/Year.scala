@@ -1,6 +1,6 @@
 package nextime
 
-import validation.{Rule, Violation}
+import validation.Rule
 
 sealed abstract case class Year(parts: List[YearPart]) extends MultipartExpression
 
@@ -22,5 +22,8 @@ object Year {
 
   def unsafe(head: YearPart, tail: YearPart*): Year = unsafe(head :: tail.toList)
 
-  def unsafe(parts: List[YearPart]): Year = apply(parts).right.get
+  def unsafe(parts: List[YearPart]): Year = apply(parts) match {
+    case Right(year) => year
+    case Left(violation) => throw violation
+  }
 }

@@ -1,5 +1,6 @@
 package nextime.validation
 
+import nextime.Violation
 import shapeless.{:+:, ::, CNil, Coproduct, HList, HNil, Inl, Inr, LabelledTypeClass, LabelledTypeClassCompanion}
 
 trait RuleLabelledTypeClassCompanion extends LabelledTypeClassCompanion[Rule] {

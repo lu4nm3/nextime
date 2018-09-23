@@ -1,7 +1,6 @@
 package nextime
 package parsing
 
-import nextime.validation.Violation
 import fastparse.core.Parsed
 import fastparse.core.Parsed.{Failure, Success}
 import org.scalatest.Matchers._

@@ -1,6 +1,6 @@
 package nextime
 
-import validation.{Rule, Violation}
+import validation.Rule
 
 sealed abstract case class Second(parts: List[SecondPart]) extends MultipartExpression
 
@@ -22,5 +22,8 @@ object Second {
 
   def unsafe(head: SecondPart, tail: SecondPart*): Second = unsafe(head :: tail.toList)
 
-  def unsafe(parts: List[SecondPart]): Second = apply(parts).right.get
+  def unsafe(parts: List[SecondPart]): Second = apply(parts) match {
+    case Right(second) => second
+    case Left(violation) => throw violation
+  }
 }

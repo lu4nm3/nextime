@@ -2,16 +2,12 @@
 
 Nextime is a library for Scala that helps you figure out the "next time" something should occur by providing an easy and type safe way to work with cron expressions.
 
-[//]: <> (Links)
+[licenseImg]: https://img.shields.io/github/license/lu4nm3/nextime.svg
+[licenseLink]: LICENSE
 
 [travisCiImg]: https://img.shields.io/travis/lu4nm3/nextime/master.svg
 [travisCiLink]: https://travis-ci.org/lu4nm3/nextime
 
-[licenseImg]: https://img.shields.io/github/license/lu4nm3/nextime.svg
-[licenseLink]: LICENSE
-
-[mavenImg]: https://img.shields.io/maven-central/v/io.kleisli/nextime_2.12.svg
-[mavenLink]: https://search.maven.org/search?q=nextime
 
 # Guide
 
@@ -19,10 +15,13 @@ Nextime is a library for Scala that helps you figure out the "next time" somethi
   2. [Expressions](#expressions)
   3. [Time](#time)
   4. [Violations](#violations)
-  
+
 # Installation
 
 Latest version: [![Maven][mavenImg]][mavenLink]
+
+[mavenImg]: https://img.shields.io/maven-central/v/io.kleisli/nextime_2.12.svg
+[mavenLink]: https://search.maven.org/search?q=nextime
 
 In your `build.sbt`, add the following:
 
@@ -41,13 +40,13 @@ import nextime._
 ```scala
 import nextime._
 
-val minute = Minute(3)
-val hour = Hour(5)
+val minute = Minute(0)
+val hour = Hour(3)
 val dayOfMonth = DayOfMonth(11)
 val month = Month(4)
 val dayOfWeek = DayOfWeek(?)
 
-Cron(minute, hour, dayOfMonth, month, dayOfWeek) // Maybe[Cron]
+Cron(minute, hour, dayOfMonth, month, dayOfWeek) // Either[Violation, Cron]
 ```
 
 # Expressions
@@ -56,7 +55,7 @@ You can think of cron expressions as being made up of several multipart expressi
 
 ## Cron Expressions
 
-The `Cron` type uses smart constructors to create instances of `Maybe[Cron]` which represents the possibility of errors in the cron expression. Note that `Maybe[Cron]` is just a type alias for `Either[Violation, Cron]`:
+The `Cron` type uses smart constructors to create instances of `Either[Violation, Cron]` to account for the possibility of errors in the cron expression:
 
 ```scala
 val cron: Either[Violation, Cron] = Cron(minute, hour, dayOfMonth, month, dayOfWeek)
@@ -70,23 +69,55 @@ Only 3 permutations of multipart expressions are supported in a cron expression:
 | #2          | ✓      | ✓      | ✓    | ✓            | ✓     | ✓           |      |
 | #3          | ✓      | ✓      | ✓    | ✓            | ✓     | ✓           | ✓    |
 
-You can also create a `Cron` expression directly from a string representation through the constructor:
+You can also create a `Cron` expression directly from a string representation:
 
 ```scala
-val cron = Cron("3 5 11 4 ?")
+val cron: Either[Violation, Cron] = Cron("0 3 11 4 ?")
 ```
 
 As well as through the `cron` string interpolator:
 
 ```scala
-val cron = cron"3 5 11 4 ?"
+val cron: Either[Violation, Cron] = cron"0 3 11 4 ?"
 ```
 
 And you can get back the string representation of a cron expression using `mkString`:
 
 ```scala
-val s: Maybe[String] = cron.map(_.mkString) // Right("3 5 11 4 ?")
+cron.map(_.mkString) // Right("0 3 11 4 ?")
 ```
+
+If you're feeling adventurous, you can use the `unsafe` versions of these constructors which will return a `Cron` value directly:
+
+```scala
+val cron1: Cron = Cron.unsafe(minute, hour, dayOfMonth, month, dayOfWeek)
+
+val cron2: Cron = Cron.unsafe("0 3 11 4 ?")
+
+val cron3: Cron = ucron"0 3 11 4 ?"
+```
+
+Just be careful as the `unsafe` constructors will throw exceptions when attempting to build an invalid cron expression:
+
+```scala
+scala> Cron.unsafe("0 3 -11 4 ?")
+nextime.Violation$UniqueViolation:
+{
+    "message" : "Invalid cron expression",
+    "cause" : {
+        "message" : "Invalid day of month expression",
+        "cause" : {
+            "message" : "Numeric values must be between 1 and 31",
+            "cause" : "-11 is out of bounds"
+        }
+    }
+}
+  at nextime.Violation$.apply(Violation.scala:53)
+  at nextime.Violation$.apply(Violation.scala:45)
+  ...
+```
+
+Read more about cron violations in the section below.
 
 ## Multipart Expressions
 
@@ -99,11 +130,11 @@ Cron(Minute(...), Hour(...), DayOfMonth(...), Month(...), DayOfWeek(...))
 Multipart expressions are made up of at least 1 or more part expressions, hence why they are "multipart". And just like with `Cron` expressions, multipart expressions use smart constructors to encapsulate the possibility of having errors:
 
 ```scala
-val second = Second(*) // Maybe[Second]
+val second: Either[Violation, Second] = Second(*)
 
-val minute = Minute(3, 21, 56) // Maybe[Minute]
+val minute: Either[Violation, Minute] = Minute(3, 21, 56)
 
-val hour = Hour(17) // Maybe[Hour]
+val hour: Either[Violation, Hour] = Hour(17)
 ```
 
 The parts that you can use in a multipart expression vary. Every multipart expression has a lower and upper bounds on the values that you're allowed to use and not all of them support the same part expressions:
@@ -118,11 +149,36 @@ The parts that you can use in a multipart expression vary. Every multipart expre
 | Day of Week          | `1-7` or `SUN-SAT`  | `*` `-` `/` `?` `L` `XL` `X#X`      |
 | Year                 | `1970-2099`         | `*` `-` `/`                         |
 
+Much like `Cron`, multipart expressions provide `unsafe` constructors to build instances directly:
+
+```scala
+val second: Second = Second.unsafe(*)
+
+val minute: Minute = Minute.unsafe(3, 21, 56)
+
+val hour: Hour = Hour.unsafe(17)
+```
+
+And if used on an invalid multipart expression, an exception will be thrown:
+
+```scala
+scala> Hour.unsafe(-3)
+nextime.Violation$UniqueViolation:
+{
+    "message" : "Invalid hour expression",
+    "cause" : {
+        "message" : "Numeric values must be between 0 and 23",
+        "cause" : "-3 is out of bounds"
+    }
+}
+  at nextime.Violation$.apply(Violation.scala:53)
+  at nextime.Violation$.apply(Violation.scala:45)
+  ...
+```
+
 ## Part Expressions
 
 Part expressions are the lowest level building block for cron expressions. Nextime supports all of the same expressions as the Java [Quartz][quartz] library through a series of custom types. It also provides shorthand versions of these types for convenience.
-
-[//]: <> (Links)
 
 [quartz]: http://www.quartz-scheduler.org/documentation/quartz-2.x/tutorials/crontrigger.html
 
@@ -142,63 +198,47 @@ Part expressions are the lowest level building block for cron expressions. Nexti
 
 # Time
 
-Nextime supports various ways of using cron expressions to work with time.
+Nextime supports a couple of ways to work with time using cron expressions.
 
-## Next time
+## Next & Previous Time
 
-Given a `Cron` expression, use the `next` method to find the next time it will be triggered:
+Given a `Cron` expression and a particular point in time:
 
 ```scala
 import org.joda.time.DateTime
 import nextime._
 
 val cron = Cron("0 0 3 11 4 ? *")
-val dateTime = new DateTime(2018, 4, 21, 3, 0, DateTimeZone.forID("America/Los_Angeles"))
+val dateTime = new DateTime(2018, 4, 11, 3, 0, DateTimeZone.forID("America/Los_Angeles"))
+```
 
+You can use the `next` method to find the next time it will be triggered:
+
+```scala
 cron.map(_.next(dateTime)) // Right(Some(2019-04-11T03:00:00.000-07:00))
 ```
 
-You'll notice that the return type was an `Option[DateTime]` which represents the possibility that there are no more future date times that match the cron expression:
+Similarly, you can use the `previous` method to find the last time that a cron expression was triggered:
 
 ```scala
-import org.joda.time.DateTime
-import nextime._
+cron.map(_.previous(dateTime)) // Right(Some(2017-04-11T03:00:00.000-07:00))
+```
 
+You'll notice that the return type for both was an `Option[DateTime]` which represents the possibility that there are no past or future date times that match the cron expression:
+
+```scala
 val cron = Cron("0 0 3 11 4 ? 2018")
-val dateTime = new DateTime(2018, 4, 21, 3, 0, DateTimeZone.forID("America/Los_Angeles"))
 
 cron.map(_.next(dateTime)) // Right(None)
-```
-
-Note that currently Nextime only `DateTime` values from the Joda Time library are supported. Future enhancements will extend this to support other date time types.
-
-## Previous time
-
-Nextime also supports the ability to find the previous time that a cron expression was triggered through the `previous` method:
-
-```scala
-import org.joda.time.DateTime
-import nextime._
-
-val cron = Cron("0 0 3 11 4 ? *")
-val dateTime = new DateTime(2018, 4, 21, 3, 0, DateTimeZone.forID("America/Los_Angeles"))
-
-cron.map(_.previous(dateTime)) // Right(Some(2018-04-11T03:00:00.000-07:00))
-```
-
-Just like before, the return type is an `Option[DateTime]` for the cases when a cron expression can not be triggered in the past:
-
-```scala
-import org.joda.time.DateTime
-import nextime._
-
-val cron = Cron("0 0 3 11 4 ? 2018")
-val dateTime = new DateTime(2017, 4, 21, 3, 0, DateTimeZone.forID("America/Los_Angeles"))
 
 cron.map(_.previous(dateTime)) // Right(None)
 ```
 
+Note that currently Nextime only supports `DateTime` values from the Joda Time library. Future enhancements will extend this to support other date types.
+
 # Violations
 
+Nextime provides an intricate violation system that is used to describe issues that your cron expression and its sub-expressions may have.
 
+It uses a recursive structure
 

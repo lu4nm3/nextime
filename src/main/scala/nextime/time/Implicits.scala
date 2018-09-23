@@ -4,7 +4,7 @@ import org.joda.time.{DateTime, MutableDateTime}
 
 import scala.language.implicitConversions
 
-private[nextime] trait Implicits {
+trait Implicits {
 
   implicit def implMutableToDateTime(implicit m: MutableDateTime): DateTime = m.toDateTime
 

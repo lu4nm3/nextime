@@ -3,7 +3,6 @@ package parsing
 
 import fastparse.all.{CharIn, P, Parser => FParser, _}
 import fastparse.core.Parsed.{Failure, Success}
-import validation.Violation
 
 trait Parser {
   def parse(cronExpression: String): Either[Violation, Cron] = {

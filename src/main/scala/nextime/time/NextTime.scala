@@ -5,7 +5,7 @@ import implicits._
 import intervals._
 import org.joda.time.{DateTime, MutableDateTime}
 
-private[nextime] trait NextTime extends CronLike {
+trait NextTime extends CronLike {
 
   def next(dateTime: DateTime = DateTime.now): Option[DateTime] = {
     import util.control.Breaks._
