@@ -5,10 +5,10 @@ import fastparse.all.{CharIn, P, Parser => FParser, _}
 import fastparse.core.Parsed.{Failure, Success}
 
 trait Parser {
-  def parse(cronExpression: String): Either[Violation, Cron] = {
+  def parse(cronExpression: String): Either[Error, Cron] = {
     parser.parse(cronExpression) match {
       case Success(cron, _) => cron
-      case Failure(_, _, _) => Left(Violation("Invalid cron expression", Violation("Incorrect cron syntax")))
+      case Failure(_, _, _) => Left(Error("Invalid cron expression", Error("Incorrect cron syntax")))
     }
   }
 
@@ -32,7 +32,7 @@ trait Parser {
     case (bound: Option[IncrementPart], inc) => Increment(bound, inc)
   }
 
-  type SubExpression[T] = Either[Violation, T]
+  type SubExpression[T] = Either[Error, T]
 
   protected val second: FParser[SubExpression[Second]] = {
     (increment | range | value | all)
@@ -70,28 +70,28 @@ trait Parser {
       .map(parts => Year(parts.toList))
   }
 
-  protected val parser1: FParser[Either[Violation, Cron]] = {
+  protected val parser1: FParser[Either[Error, Cron]] = {
     (minute ~ " " ~ hour ~ " " ~ dayOfMonth ~ " " ~ month ~ " " ~ dayOfWeek ~ End)
       .map {
         case (min, hr, doM, mon, doW) => Cron(min, hr, doM, mon, doW)
       }
   }
 
-  protected val parser2: FParser[Either[Violation, Cron]] = {
+  protected val parser2: FParser[Either[Error, Cron]] = {
     (second ~ " " ~ minute ~ " " ~ hour ~ " " ~ dayOfMonth ~ " " ~ month ~ " " ~ dayOfWeek ~ End)
       .map {
         case (sec, min, hr, doM, mon, doW) => Cron(sec, min, hr, doM, mon, doW)
       }
   }
 
-  protected val parser3: FParser[Either[Violation, Cron]] = {
+  protected val parser3: FParser[Either[Error, Cron]] = {
     (second ~ " " ~ minute ~ " " ~ hour ~ " " ~ dayOfMonth ~ " " ~ month ~ " " ~ dayOfWeek ~ " " ~ year ~ End)
       .map {
         case (sec, min, hr, doM, mon, doW, yr) => Cron(sec, min, hr, doM, mon, doW, yr)
       }
   }
 
-  protected val parser: FParser[Either[Violation, Cron]] = parser1 | parser2 | parser3
+  protected val parser: FParser[Either[Error, Cron]] = parser1 | parser2 | parser3
 }
 
 object Parser extends Parser

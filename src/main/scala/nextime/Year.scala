@@ -7,14 +7,14 @@ sealed abstract case class Year(parts: List[YearPart]) extends MultipartExpressi
 object Year {
   implicit val bounds: Bounds = Bounds(1979, 2099)
 
-  def apply(head: YearPart, tail: YearPart*): Either[Violation, Year] = apply(head :: tail.toList)
+  def apply(head: YearPart, tail: YearPart*): Either[Error, Year] = apply(head :: tail.toList)
 
-  def apply(parts: List[YearPart]): Either[Violation, Year] = {
+  def apply(parts: List[YearPart]): Either[Error, Year] = {
     if (parts.isEmpty) {
-      Left(Violation("Year expression must not be empty"))
+      Left(Error("Year expression must not be empty"))
     } else {
-      parts.flatMap(implicitly[Rule[YearPart]].violations) match {
-        case violations if violations.nonEmpty => Left(Violation("Invalid year expression", violations.toList))
+      parts.flatMap(implicitly[Rule[YearPart]].errors) match {
+        case errors if errors.nonEmpty => Left(Error("Invalid year expression", errors))
         case _ => Right(new Year(parts) {})
       }
     }
@@ -24,6 +24,6 @@ object Year {
 
   def unsafe(parts: List[YearPart]): Year = apply(parts) match {
     case Right(year) => year
-    case Left(violation) => throw violation
+    case Left(error) => throw error
   }
 }

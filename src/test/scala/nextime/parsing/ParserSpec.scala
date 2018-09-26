@@ -473,11 +473,11 @@ class ParserSpec extends WordSpec with Parser {
     }
   }
 
-  private implicit def parsedToCron[T](parsed: Parsed[Parser.SubExpression[T], Char, String]): Either[Violation, T] = {
+  private implicit def parsedToCron[T](parsed: Parsed[Parser.SubExpression[T], Char, String]): Either[Error, T] = {
     parsed match {
       case Success(expr, _) => expr
       case Failure(x, y, z) =>
-        Left(Violation("Invalid cron expression", Violation("Incorrect cron syntax")))
+        Left(Error("Invalid cron expression", Error("Incorrect cron syntax")))
     }
   }
 }

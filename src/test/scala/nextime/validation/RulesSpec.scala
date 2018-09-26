@@ -7,8 +7,8 @@ import org.scalatest.WordSpec
 class RulesSpec extends WordSpec {
 
   implicit class Ops[T](value: T) {
-    def validate(implicit rule: Rule[T]): Vector[Violation] = {
-      rule.violations(value)
+    def validate(implicit rule: Rule[T]): Vector[Error] = {
+      rule.errors(value)
     }
   }
 
@@ -33,12 +33,12 @@ class RulesSpec extends WordSpec {
 
           assert(result1.nonEmpty)
           assertResult(
-            Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-1 is out of bounds"))
+            Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-1 is out of bounds"))
           )(result1.head)
 
           assert(result2.nonEmpty)
           assertResult(
-            Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("4 is out of bounds"))
+            Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("4 is out of bounds"))
           )(result2.head)
         }
       }
@@ -66,35 +66,35 @@ class RulesSpec extends WordSpec {
 
           assert(result1.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               s"Range lower and upper values must be between ${bounds.lower} and ${bounds.upper}",
-              Violation("-1 is out of bounds"),
-              Violation("0 is out of bounds")
+              Error("-1 is out of bounds"),
+              Error("0 is out of bounds")
             )
           )(result1.head)
 
           assert(result2.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               s"Range lower and upper values must be between ${bounds.lower} and ${bounds.upper}",
-              Violation("0 is out of bounds")
+              Error("0 is out of bounds")
             )
           )(result2.head)
 
           assert(result3.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               s"Range lower and upper values must be between ${bounds.lower} and ${bounds.upper}",
-              Violation("6 is out of bounds")
+              Error("6 is out of bounds")
             )
           )(result3.head)
 
           assert(result4.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               s"Range lower and upper values must be between ${bounds.lower} and ${bounds.upper}",
-              Violation("6 is out of bounds"),
-              Violation("7 is out of bounds")
+              Error("6 is out of bounds"),
+              Error("7 is out of bounds")
             )
           )(result4.head)
         }
@@ -132,45 +132,45 @@ class RulesSpec extends WordSpec {
 
           assert(result1.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               "One or more components of the increment subexpression are invalid",
-              Violation("Increment values must be non-negative", Violation("-2 is negative"))
+              Error("Increment values must be non-negative", Error("-2 is negative"))
             )
           )(result1.head)
 
           assert(result2.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               "One or more components of the increment subexpression are invalid",
-              Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-2 is out of bounds"))
+              Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-2 is out of bounds"))
             )
           )(result2.head)
 
           assert(result3.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               "One or more components of the increment subexpression are invalid",
-              Violation("Increment values must be non-negative", Violation("-2 is negative")),
-              Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-2 is out of bounds"))
+              Error("Increment values must be non-negative", Error("-2 is negative")),
+              Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-2 is out of bounds"))
             )
           )(result3.head)
 
           assert(result4.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               "One or more components of the increment subexpression are invalid",
-              Violation(
+              Error(
                 s"Range lower and upper values must be between ${bounds.lower} and ${bounds.upper}",
-                Violation("0 is out of bounds")
+                Error("0 is out of bounds")
               )
             )
           )(result4.head)
 
           assert(result5.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               "One or more components of the increment subexpression are invalid",
-              Violation("Increment values must be non-negative", Violation("-3 is negative"))
+              Error("Increment values must be non-negative", Error("-3 is negative"))
             )
           )(result5.head)
         }
@@ -209,12 +209,12 @@ class RulesSpec extends WordSpec {
 
           assert(result1.nonEmpty)
           assertResult(
-            Violation("Day of the week values must be between 1 and 7", Violation("0 is out of bounds"))
+            Error("Day of the week values must be between 1 and 7", Error("0 is out of bounds"))
           )(result1.head)
 
           assert(result2.nonEmpty)
           assertResult(
-            Violation("Day of the week values must be between 1 and 7", Violation("8 is out of bounds"))
+            Error("Day of the week values must be between 1 and 7", Error("8 is out of bounds"))
           )(result2.head)
         }
       }
@@ -236,12 +236,12 @@ class RulesSpec extends WordSpec {
 
           assert(result1.nonEmpty)
           assertResult(
-            Violation("Offset value from last day of the month must be between 0 and 30", Violation("-1 is out of bounds"))
+            Error("Offset value from last day of the month must be between 0 and 30", Error("-1 is out of bounds"))
           )(result1.head)
 
           assert(result2.nonEmpty)
           assertResult(
-            Violation("Offset value from last day of the month must be between 0 and 30", Violation("31 is out of bounds"))
+            Error("Offset value from last day of the month must be between 0 and 30", Error("31 is out of bounds"))
           )(result2.head)
         }
       }
@@ -263,12 +263,12 @@ class RulesSpec extends WordSpec {
 
           assert(result1.nonEmpty)
           assertResult(
-            Violation("Weekday values must be between 1 and 31", Violation("0 is out of bounds"))
+            Error("Weekday values must be between 1 and 31", Error("0 is out of bounds"))
           )(result1.head)
 
           assert(result2.nonEmpty)
           assertResult(
-            Violation("Weekday values must be between 1 and 31", Violation("32 is out of bounds"))
+            Error("Weekday values must be between 1 and 31", Error("32 is out of bounds"))
           )(result2.head)
         }
       }
@@ -307,42 +307,42 @@ class RulesSpec extends WordSpec {
 
           assert(result1.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               "One or more components of the nth x day of the month subexpression are invalid",
-              Violation("Weekday values preceding '#' must be between 1 and 7", Violation("0 is out of bounds"))
+              Error("Weekday values preceding '#' must be between 1 and 7", Error("0 is out of bounds"))
             )
           )(result1.head)
 
           assert(result2.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               "One or more components of the nth x day of the month subexpression are invalid",
-              Violation("Weekday values preceding '#' must be between 1 and 7", Violation("8 is out of bounds"))
+              Error("Weekday values preceding '#' must be between 1 and 7", Error("8 is out of bounds"))
             )
           )(result2.head)
 
           assert(result3.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               "One or more components of the nth x day of the month subexpression are invalid",
-              Violation("Weekday values following '#' must be between 1 and 5", Violation("0 is out of bounds"))
+              Error("Weekday values following '#' must be between 1 and 5", Error("0 is out of bounds"))
             )
           )(result3.head)
 
           assert(result4.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               "One or more components of the nth x day of the month subexpression are invalid",
-              Violation("Weekday values following '#' must be between 1 and 5", Violation("6 is out of bounds"))
+              Error("Weekday values following '#' must be between 1 and 5", Error("6 is out of bounds"))
             )
           )(result4.head)
 
           assert(result5.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               "One or more components of the nth x day of the month subexpression are invalid",
-              Violation("Weekday values following '#' must be between 1 and 5", Violation("6 is out of bounds")),
-              Violation("Weekday values preceding '#' must be between 1 and 7", Violation("0 is out of bounds"))
+              Error("Weekday values following '#' must be between 1 and 5", Error("6 is out of bounds")),
+              Error("Weekday values preceding '#' must be between 1 and 7", Error("0 is out of bounds"))
             )
           )(result5.head)
         }
@@ -381,22 +381,22 @@ class RulesSpec extends WordSpec {
 
           assert(result1.nonEmpty)
           assertResult(
-            Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-1 is out of bounds"))
+            Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-1 is out of bounds"))
           )(result1.head)
 
           assert(result2.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               s"Range lower and upper values must be between ${bounds.lower} and ${bounds.upper}",
-              Violation("-1 is out of bounds")
+              Error("-1 is out of bounds")
             )
           )(result2.head)
 
           assert(result3.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               "One or more components of the increment subexpression are invalid",
-              Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-2 is out of bounds"))
+              Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-2 is out of bounds"))
             )
           )(result3.head)
         }
@@ -433,22 +433,22 @@ class RulesSpec extends WordSpec {
 
           assert(result1.nonEmpty)
           assertResult(
-            Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-1 is out of bounds"))
+            Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-1 is out of bounds"))
           )(result1.head)
 
           assert(result2.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               s"Range lower and upper values must be between ${bounds.lower} and ${bounds.upper}",
-              Violation("-1 is out of bounds")
+              Error("-1 is out of bounds")
             )
           )(result2.head)
 
           assert(result3.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               "One or more components of the increment subexpression are invalid",
-              Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-2 is out of bounds"))
+              Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-2 is out of bounds"))
             )
           )(result3.head)
         }
@@ -485,22 +485,22 @@ class RulesSpec extends WordSpec {
 
           assert(result1.nonEmpty)
           assertResult(
-            Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-1 is out of bounds"))
+            Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-1 is out of bounds"))
           )(result1.head)
 
           assert(result2.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               s"Range lower and upper values must be between ${bounds.lower} and ${bounds.upper}",
-              Violation("-1 is out of bounds")
+              Error("-1 is out of bounds")
             )
           )(result2.head)
 
           assert(result3.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               "One or more components of the increment subexpression are invalid",
-              Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-2 is out of bounds"))
+              Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-2 is out of bounds"))
             )
           )(result3.head)
         }
@@ -556,33 +556,33 @@ class RulesSpec extends WordSpec {
 
           assert(result1.nonEmpty)
           assertResult(
-            Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-1 is out of bounds"))
+            Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-1 is out of bounds"))
           )(result1.head)
 
           assert(result2.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               s"Range lower and upper values must be between ${bounds.lower} and ${bounds.upper}",
-              Violation("-1 is out of bounds")
+              Error("-1 is out of bounds")
             )
           )(result2.head)
 
           assert(result3.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               "One or more components of the increment subexpression are invalid",
-              Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-2 is out of bounds"))
+              Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-2 is out of bounds"))
             )
           )(result3.head)
 
           assert(result4.nonEmpty)
           assertResult(
-            Violation("Offset value from last day of the month must be between 0 and 30", Violation("-2 is out of bounds"))
+            Error("Offset value from last day of the month must be between 0 and 30", Error("-2 is out of bounds"))
           )(result4.head)
 
           assert(result5.nonEmpty)
           assertResult(
-            Violation("Weekday values must be between 1 and 31", Violation("-2 is out of bounds"))
+            Error("Weekday values must be between 1 and 31", Error("-2 is out of bounds"))
           )(result5.head)
         }
       }
@@ -618,22 +618,22 @@ class RulesSpec extends WordSpec {
 
           assert(result1.nonEmpty)
           assertResult(
-            Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-1 is out of bounds"))
+            Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-1 is out of bounds"))
           )(result1.head)
 
           assert(result2.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               s"Range lower and upper values must be between ${bounds.lower} and ${bounds.upper}",
-              Violation("-1 is out of bounds")
+              Error("-1 is out of bounds")
             )
           )(result2.head)
 
           assert(result3.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               "One or more components of the increment subexpression are invalid",
-              Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-2 is out of bounds"))
+              Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-2 is out of bounds"))
             )
           )(result3.head)
         }
@@ -686,35 +686,35 @@ class RulesSpec extends WordSpec {
 
           assert(result1.nonEmpty)
           assertResult(
-            Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-1 is out of bounds"))
+            Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-1 is out of bounds"))
           )(result1.head)
 
           assert(result2.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               s"Range lower and upper values must be between ${bounds.lower} and ${bounds.upper}",
-              Violation("-1 is out of bounds")
+              Error("-1 is out of bounds")
             )
           )(result2.head)
 
           assert(result3.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               "One or more components of the increment subexpression are invalid",
-              Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-2 is out of bounds"))
+              Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-2 is out of bounds"))
             )
           )(result3.head)
 
           assert(result4.nonEmpty)
           assertResult(
-            Violation("Day of the week values must be between 1 and 7", Violation("-2 is out of bounds"))
+            Error("Day of the week values must be between 1 and 7", Error("-2 is out of bounds"))
           )(result4.head)
 
           assert(result5.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               "One or more components of the nth x day of the month subexpression are invalid",
-              Violation("Weekday values preceding '#' must be between 1 and 7", Violation("-3 is out of bounds"))
+              Error("Weekday values preceding '#' must be between 1 and 7", Error("-3 is out of bounds"))
             )
           )(result5.head)
         }
@@ -751,22 +751,22 @@ class RulesSpec extends WordSpec {
 
           assert(result1.nonEmpty)
           assertResult(
-            Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-1 is out of bounds"))
+            Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-1 is out of bounds"))
           )(result1.head)
 
           assert(result2.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               s"Range lower and upper values must be between ${bounds.lower} and ${bounds.upper}",
-              Violation("-1 is out of bounds")
+              Error("-1 is out of bounds")
             )
           )(result2.head)
 
           assert(result3.nonEmpty)
           assertResult(
-            Violation(
+            Error(
               "One or more components of the increment subexpression are invalid",
-              Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-2 is out of bounds"))
+              Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-2 is out of bounds"))
             )
           )(result3.head)
         }
@@ -797,13 +797,13 @@ class RulesSpec extends WordSpec {
         val dayOfWeekParts: List[DayOfWeekPart] = List(value, range, all, increment, noValue, last, lastDayOfMonth, nthXDayOfMonth)
         val yearParts: List[YearPart] = List(value, range, all, increment)
 
-        val result1 = secondParts.flatMap(implicitly[Rule[SecondPart]].violations)
-        val result2 = minuteParts.flatMap(implicitly[Rule[MinutePart]].violations)
-        val result3 = hourParts.flatMap(implicitly[Rule[HourPart]].violations)
-        val result4 = dayOfMonthParts.flatMap(implicitly[Rule[DayOfMonthPart]].violations)
-        val result5 = monthParts.flatMap(implicitly[Rule[MonthPart]].violations)
-        val result6 = dayOfWeekParts.flatMap(implicitly[Rule[DayOfWeekPart]].violations)
-        val result7 = yearParts.flatMap(implicitly[Rule[YearPart]].violations)
+        val result1 = secondParts.flatMap(implicitly[Rule[SecondPart]].errors)
+        val result2 = minuteParts.flatMap(implicitly[Rule[MinutePart]].errors)
+        val result3 = hourParts.flatMap(implicitly[Rule[HourPart]].errors)
+        val result4 = dayOfMonthParts.flatMap(implicitly[Rule[DayOfMonthPart]].errors)
+        val result5 = monthParts.flatMap(implicitly[Rule[MonthPart]].errors)
+        val result6 = dayOfWeekParts.flatMap(implicitly[Rule[DayOfWeekPart]].errors)
+        val result7 = yearParts.flatMap(implicitly[Rule[YearPart]].errors)
 
         assert(result1.isEmpty)
         assert(result2.isEmpty)
@@ -831,117 +831,117 @@ class RulesSpec extends WordSpec {
         val dayOfWeekParts: List[DayOfWeekPart] = List(value, range, increment, lastDayOfMonth, nthXDayOfMonth)
         val yearParts: List[YearPart] = List(value, range, increment)
 
-        val result1 = secondParts.flatMap(implicitly[Rule[SecondPart]].violations)
-        val result2 = minuteParts.flatMap(implicitly[Rule[MinutePart]].violations)
-        val result3 = hourParts.flatMap(implicitly[Rule[HourPart]].violations)
-        val result4 = dayOfMonthParts.flatMap(implicitly[Rule[DayOfMonthPart]].violations)
-        val result5 = monthParts.flatMap(implicitly[Rule[MonthPart]].violations)
-        val result6 = dayOfWeekParts.flatMap(implicitly[Rule[DayOfWeekPart]].violations)
-        val result7 = yearParts.flatMap(implicitly[Rule[YearPart]].violations)
+        val result1 = secondParts.flatMap(implicitly[Rule[SecondPart]].errors)
+        val result2 = minuteParts.flatMap(implicitly[Rule[MinutePart]].errors)
+        val result3 = hourParts.flatMap(implicitly[Rule[HourPart]].errors)
+        val result4 = dayOfMonthParts.flatMap(implicitly[Rule[DayOfMonthPart]].errors)
+        val result5 = monthParts.flatMap(implicitly[Rule[MonthPart]].errors)
+        val result6 = dayOfWeekParts.flatMap(implicitly[Rule[DayOfWeekPart]].errors)
+        val result7 = yearParts.flatMap(implicitly[Rule[YearPart]].errors)
 
         assert(result1.nonEmpty)
         result1 should contain allOf(
-          Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-1 is out of bounds")),
-          Violation(
+          Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-1 is out of bounds")),
+          Error(
             s"Range lower and upper values must be between ${bounds.lower} and ${bounds.upper}",
-            Violation("-1 is out of bounds"), Violation("-3 is out of bounds")
+            Error("-1 is out of bounds"), Error("-3 is out of bounds")
           ),
-          Violation(
+          Error(
             "One or more components of the increment subexpression are invalid",
-            Violation("Increment values must be non-negative", Violation("-3 is negative")),
-            Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-2 is out of bounds"))
+            Error("Increment values must be non-negative", Error("-3 is negative")),
+            Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-2 is out of bounds"))
           )
         )
 
         assert(result2.nonEmpty)
         result2 should contain allOf(
-          Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-1 is out of bounds")),
-          Violation(
+          Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-1 is out of bounds")),
+          Error(
             s"Range lower and upper values must be between ${bounds.lower} and ${bounds.upper}",
-            Violation("-1 is out of bounds"), Violation("-3 is out of bounds")
+            Error("-1 is out of bounds"), Error("-3 is out of bounds")
           ),
-          Violation(
+          Error(
             "One or more components of the increment subexpression are invalid",
-            Violation("Increment values must be non-negative", Violation("-3 is negative")),
-            Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-2 is out of bounds"))
+            Error("Increment values must be non-negative", Error("-3 is negative")),
+            Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-2 is out of bounds"))
           )
         )
 
         assert(result3.nonEmpty)
         result3 should contain allOf(
-          Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-1 is out of bounds")),
-          Violation(
+          Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-1 is out of bounds")),
+          Error(
             s"Range lower and upper values must be between ${bounds.lower} and ${bounds.upper}",
-            Violation("-1 is out of bounds"), Violation("-3 is out of bounds")
+            Error("-1 is out of bounds"), Error("-3 is out of bounds")
           ),
-          Violation(
+          Error(
             "One or more components of the increment subexpression are invalid",
-            Violation("Increment values must be non-negative", Violation("-3 is negative")),
-            Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-2 is out of bounds"))
+            Error("Increment values must be non-negative", Error("-3 is negative")),
+            Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-2 is out of bounds"))
           )
         )
 
         assert(result4.nonEmpty)
         result4 should contain allOf(
-          Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-1 is out of bounds")),
-          Violation(
+          Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-1 is out of bounds")),
+          Error(
             s"Range lower and upper values must be between ${bounds.lower} and ${bounds.upper}",
-            Violation("-1 is out of bounds"), Violation("-3 is out of bounds")
+            Error("-1 is out of bounds"), Error("-3 is out of bounds")
           ),
-          Violation(
+          Error(
             "One or more components of the increment subexpression are invalid",
-            Violation("Increment values must be non-negative", Violation("-3 is negative")),
-            Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-2 is out of bounds"))
+            Error("Increment values must be non-negative", Error("-3 is negative")),
+            Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-2 is out of bounds"))
           ),
-          Violation("Offset value from last day of the month must be between 0 and 30", Violation("-2 is out of bounds")),
-          Violation("Weekday values must be between 1 and 31", Violation("-2 is out of bounds"))
+          Error("Offset value from last day of the month must be between 0 and 30", Error("-2 is out of bounds")),
+          Error("Weekday values must be between 1 and 31", Error("-2 is out of bounds"))
         )
 
         assert(result5.nonEmpty)
         result5 should contain allOf(
-          Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-1 is out of bounds")),
-          Violation(
+          Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-1 is out of bounds")),
+          Error(
             s"Range lower and upper values must be between ${bounds.lower} and ${bounds.upper}",
-            Violation("-1 is out of bounds"), Violation("-3 is out of bounds")
+            Error("-1 is out of bounds"), Error("-3 is out of bounds")
           ),
-          Violation(
+          Error(
             "One or more components of the increment subexpression are invalid",
-            Violation("Increment values must be non-negative", Violation("-3 is negative")),
-            Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-2 is out of bounds"))
+            Error("Increment values must be non-negative", Error("-3 is negative")),
+            Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-2 is out of bounds"))
           )
         )
 
         assert(result6.nonEmpty)
         result6 should contain allOf(
-          Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-1 is out of bounds")),
-          Violation(
+          Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-1 is out of bounds")),
+          Error(
             s"Range lower and upper values must be between ${bounds.lower} and ${bounds.upper}",
-            Violation("-1 is out of bounds"), Violation("-3 is out of bounds")
+            Error("-1 is out of bounds"), Error("-3 is out of bounds")
           ),
-          Violation(
+          Error(
             "One or more components of the increment subexpression are invalid",
-            Violation("Increment values must be non-negative", Violation("-3 is negative")),
-            Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-2 is out of bounds"))
+            Error("Increment values must be non-negative", Error("-3 is negative")),
+            Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-2 is out of bounds"))
           ),
-          Violation("Day of the week values must be between 1 and 7", Violation("-2 is out of bounds")),
-          Violation(
+          Error("Day of the week values must be between 1 and 7", Error("-2 is out of bounds")),
+          Error(
             "One or more components of the nth x day of the month subexpression are invalid",
-            Violation("Weekday values following '#' must be between 1 and 5", Violation("-3 is out of bounds")),
-            Violation("Weekday values preceding '#' must be between 1 and 7", Violation("-2 is out of bounds"))
+            Error("Weekday values following '#' must be between 1 and 5", Error("-3 is out of bounds")),
+            Error("Weekday values preceding '#' must be between 1 and 7", Error("-2 is out of bounds"))
           )
         )
 
         assert(result7.nonEmpty)
         result7 should contain allOf(
-          Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-1 is out of bounds")),
-          Violation(
+          Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-1 is out of bounds")),
+          Error(
             s"Range lower and upper values must be between ${bounds.lower} and ${bounds.upper}",
-            Violation("-1 is out of bounds"), Violation("-3 is out of bounds")
+            Error("-1 is out of bounds"), Error("-3 is out of bounds")
           ),
-          Violation(
+          Error(
             "One or more components of the increment subexpression are invalid",
-            Violation("Increment values must be non-negative", Violation("-3 is negative")),
-            Violation(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Violation("-2 is out of bounds"))
+            Error("Increment values must be non-negative", Error("-3 is negative")),
+            Error(s"Numeric values must be between ${bounds.lower} and ${bounds.upper}", Error("-2 is out of bounds"))
           )
         )
       }

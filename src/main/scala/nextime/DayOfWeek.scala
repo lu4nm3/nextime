@@ -7,14 +7,14 @@ sealed abstract case class DayOfWeek(parts: List[DayOfWeekPart]) extends Multipa
 object DayOfWeek {
   implicit val bounds: Bounds = Bounds(1, 7)
 
-  def apply(head: DayOfWeekPart, tail: DayOfWeekPart*): Either[Violation, DayOfWeek] = apply(head :: tail.toList)
+  def apply(head: DayOfWeekPart, tail: DayOfWeekPart*): Either[Error, DayOfWeek] = apply(head :: tail.toList)
 
-  def apply(parts: List[DayOfWeekPart]): Either[Violation, DayOfWeek] = {
+  def apply(parts: List[DayOfWeekPart]): Either[Error, DayOfWeek] = {
     if (parts.isEmpty) {
-      Left(Violation("Day of week expression must not be empty"))
+      Left(Error("Day of week expression must not be empty"))
     } else {
-      parts.flatMap(implicitly[Rule[DayOfWeekPart]].violations) match {
-        case violations if violations.nonEmpty => Left(Violation("Invalid day of week expression", violations.toList))
+      parts.flatMap(implicitly[Rule[DayOfWeekPart]].errors) match {
+        case errors if errors.nonEmpty => Left(Error("Invalid day of week expression", errors))
         case _ => Right(new DayOfWeek(parts) {})
       }
     }
@@ -24,6 +24,6 @@ object DayOfWeek {
 
   def unsafe(parts: List[DayOfWeekPart]): DayOfWeek = apply(parts) match {
     case Right(dayOfWeek) => dayOfWeek
-    case Left(violation) => throw violation
+    case Left(error) => throw error
   }
 }

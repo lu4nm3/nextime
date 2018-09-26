@@ -7,14 +7,14 @@ sealed abstract case class Second(parts: List[SecondPart]) extends MultipartExpr
 object Second {
   implicit val bounds: Bounds = Bounds(0, 59)
 
-  def apply(head: SecondPart, tail: SecondPart*): Either[Violation, Second] = apply(head :: tail.toList)
+  def apply(head: SecondPart, tail: SecondPart*): Either[Error, Second] = apply(head :: tail.toList)
 
-  def apply(parts: List[SecondPart]): Either[Violation, Second] = {
+  def apply(parts: List[SecondPart]): Either[Error, Second] = {
     if (parts.isEmpty) {
-      Left(Violation("Second expression must not be empty"))
+      Left(Error("Second expression must not be empty"))
     } else {
-      parts.flatMap(implicitly[Rule[SecondPart]].violations) match {
-        case violations if violations.nonEmpty => Left(Violation("Invalid second expression", violations.toList))
+      parts.flatMap(implicitly[Rule[SecondPart]].errors) match {
+        case errors if errors.nonEmpty => Left(Error("Invalid second expression", errors))
         case _ => Right(new Second(parts) {})
       }
     }
@@ -24,6 +24,6 @@ object Second {
 
   def unsafe(parts: List[SecondPart]): Second = apply(parts) match {
     case Right(second) => second
-    case Left(violation) => throw violation
+    case Left(error) => throw error
   }
 }

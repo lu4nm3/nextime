@@ -23,7 +23,7 @@ class IntervalsSpec extends WordSpec {
     }
   }
 
-  def assertInterval(subExpression: Either[Violation, MultipartExpression], expectedIntervals: SortedSet[Int])(implicit dateTime: DateTime) = {
+  def assertInterval(subExpression: Either[Error, MultipartExpression], expectedIntervals: SortedSet[Int])(implicit dateTime: DateTime) = {
     assertResult(expectedIntervals)(subExpression.right.get.interval)
   }
 

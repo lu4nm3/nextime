@@ -14,7 +14,7 @@ sealed abstract case class Cron(second: Second,
                                 year: Year) extends Expression with CronLike with NextTime with PreviousTime
 
 object Cron extends CronEitherInstantiators with CronUnsafeInstantiators {
-  def apply(cronExpression: String): Either[Violation, Cron] = {
+  def apply(cronExpression: String): Either[Error, Cron] = {
     Parser.parse(cronExpression)
   }
 
@@ -22,7 +22,7 @@ object Cron extends CronEitherInstantiators with CronUnsafeInstantiators {
                              hour: Hour,
                              dayOfMonth: DayOfMonth,
                              month: Month,
-                             dayOfWeek: DayOfWeek): Either[Violation, Cron] = {
+                             dayOfWeek: DayOfWeek): Either[Error, Cron] = {
     createCron(
       innerMinute = minute,
       innerHour = hour,
@@ -37,7 +37,7 @@ object Cron extends CronEitherInstantiators with CronUnsafeInstantiators {
                              hour: Hour,
                              dayOfMonth: DayOfMonth,
                              month: Month,
-                             dayOfWeek: DayOfWeek): Either[Violation, Cron] = {
+                             dayOfWeek: DayOfWeek): Either[Error, Cron] = {
     createCron(
       innerSecond = Some(second),
       innerMinute = minute,
@@ -54,7 +54,7 @@ object Cron extends CronEitherInstantiators with CronUnsafeInstantiators {
                              dayOfMonth: DayOfMonth,
                              month: Month,
                              dayOfWeek: DayOfWeek,
-                             year: Year): Either[Violation, Cron] = {
+                             year: Year): Either[Error, Cron] = {
     createCron(
       innerSecond = Some(second),
       innerMinute = minute,
@@ -72,7 +72,7 @@ object Cron extends CronEitherInstantiators with CronUnsafeInstantiators {
                          innerDayOfMonth: DayOfMonth,
                          innerMonth: Month,
                          innerDayOfWeek: DayOfWeek,
-                         innerYear: Option[Year] = None): Either[Violation, Cron] = {
+                         innerYear: Option[Year] = None): Either[Error, Cron] = {
 
     if (hasNoValue(innerDayOfMonth) ^ hasNoValue(innerDayOfWeek)) {
       val second = innerSecond.getOrElse(Second.unsafe(0))
@@ -89,16 +89,16 @@ object Cron extends CronEitherInstantiators with CronUnsafeInstantiators {
       )
     } else if (hasNoValue(innerDayOfMonth) && hasNoValue(innerDayOfWeek)) {
       Left(
-        Violation(
+        Error(
           "Invalid cron expression",
-          Violation("Day-of-month and day-of-week must not both specify \"no value\"")
+          Error("Day-of-month and day-of-week must not both specify \"no value\"")
         )
       )
     } else {
       Left(
-        Violation(
+        Error(
           "Invalid cron expression",
-          Violation("Only day-of-month or day-of-week must be specified but not both")
+          Error("Only day-of-month or day-of-week must be specified but not both")
         )
       )
     }
