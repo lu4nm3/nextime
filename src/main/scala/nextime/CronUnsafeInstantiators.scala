@@ -1,5 +1,6 @@
 package nextime
 
+import nextime.implicits.EitherImplicits._
 import scala.language.implicitConversions
 
 trait CronUnsafeInstantiators {
@@ -26,9 +27,4 @@ trait CronUnsafeInstantiators {
              month: Either[Error, Month],
              dayOfWeek: Either[Error, DayOfWeek],
              year: Either[Error, Year]): Cron = Cron(second, minute, hour, dayOfMonth, month, dayOfWeek, year)
-
-  private implicit def toUnsafe[A](value: Either[Error, A]): A = value match {
-    case Right(v) => v
-    case Left(error) => throw error
-  }
 }

@@ -1,11 +1,15 @@
 package nextime
 
+import nextime.parsing.Parser
 import validation.Rule
+import nextime.implicits.EitherImplicits._
 
 sealed abstract case class Hour(parts: List[HourPart]) extends MultipartExpression
 
 object Hour {
   implicit val bounds: Bounds = Bounds(0, 23)
+
+  def apply(hourExpression: String): Either[Error, Hour] = Parser.hour(hourExpression)
 
   def apply(head: HourPart, tail: HourPart*): Either[Error, Hour] = apply(head :: tail.toList)
 
@@ -20,10 +24,9 @@ object Hour {
     }
   }
 
-  def unsafe(head: HourPart, tail: HourPart*): Hour = unsafe(head :: tail.toList)
+  def unsafe(hourExpression: String): Hour = apply(hourExpression)
 
-  def unsafe(parts: List[HourPart]): Hour = apply(parts) match {
-    case Right(hour) => hour
-    case Left(error) => throw error
-  }
+  def unsafe(head: HourPart, tail: HourPart*): Hour = apply(head :: tail.toList)
+
+  def unsafe(parts: List[HourPart]): Hour = apply(parts)
 }

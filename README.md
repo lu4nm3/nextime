@@ -72,13 +72,13 @@ Only 3 permutations of multipart expressions are supported in a cron expression:
 | #2          | ✓      | ✓      | ✓    | ✓            | ✓     | ✓           |      |
 | #3          | ✓      | ✓      | ✓    | ✓            | ✓     | ✓           | ✓    |
 
-You can also create a `Cron` expression directly from a string representation:
+You can also build a `Cron` expression directly from a string representation using a constructor:
 
 ```scala
 val cron: Either[nextime.Error, Cron] = Cron("0 3 11 4 ?")
 ```
 
-As well as through the `cron` string interpolator:
+As well as the `cron` string interpolator:
 
 ```scala
 val cron: Either[nextime.Error, Cron] = cron"0 3 11 4 ?"
@@ -143,6 +143,26 @@ val minute: Either[nextime.Error, Minute] = Minute(3, 21, 56)
 val hour: Either[nextime.Error, Hour] = Hour(17)
 ```
 
+In addition, you can build multipart expressions from their string representation using a constructor:
+ 
+```scala
+val second: Either[nextime.Error, Second] = Second("*")
+
+val minute: Either[nextime.Error, Minute] = Minute("3,21,56")
+
+val hour: Either[nextime.Error, Hour] = Hour("17")
+```
+
+As well as their respective string interpolators (`sec`, `min`, `hr`, `dom`, `mon`, `dow`, `yr`):
+
+```scala
+val second: Either[nextime.Error, Second] = sec"*"
+
+val minute: Either[nextime.Error, Minute] = min"3,21,56"
+
+val hour: Either[nextime.Error, Hour] = hr"17"
+```
+ 
 The parts that you can use in a multipart expression vary. Every multipart expression has a lower and upper bounds on 
 the values that you're allowed to use and not all of them support the same [part expressions](#part-expressions):
 
@@ -161,9 +181,11 @@ Much like `Cron`, multipart expressions provide `unsafe` constructors to build i
 ```scala
 val second: Second = Second.unsafe(*)
 
-val minute: Minute = Minute.unsafe(3, 21, 56)
+val minute: Minute = Minute.unsafe("3,21,56")
 
 val hour: Hour = Hour.unsafe(17)
+
+val dayOfMonth: DayOfMonth = udom"11"
 ```
 
 And if used on an invalid multipart expression, an exception will be thrown:
@@ -310,8 +332,9 @@ Left(nextime.Error$AggregateError:
 
 Both numeric values are negative which makes them invalid. Since both are the same type of error, in this case an
 invalid numeric expression, their causes are aggregated together into a list. The range expression is also invalid
-because it's out of bounds. However, since this error is different from the first one, it is treated as a separate type 
-of error entirely and is thus not aggregated with the rest.
+because it's out of bounds. However, since this error is different from the first one (ie. it's an error having to do 
+with an invalid range expression), it is treated as a separate type of error entirely and is thus not aggregated with 
+the rest.
 
 ### Grouped errors
 
@@ -362,8 +385,5 @@ Left(nextime.Error$AggregateError:
 })
 ```
 
-Nextime does this by using a `Semigroupal` to group all of the errors together. This is much more convenient than having
-to constantly fix and recompile every error until there are no more.
-
-You will notice that when dealing with grouped errors, Nextime keeps to the same aggregations within each multipart 
-expression as described in the previous section.
+Nextime does this by using a `Semigroupal` to group all of the errors together which makes it much more convenient than 
+having to constantly fix and recompile each individual error until there are no more.

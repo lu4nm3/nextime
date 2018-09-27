@@ -107,7 +107,7 @@ class ParserSpec extends WordSpec with Parser {
       "second" in {
         val strExpr = "1,2,3,3-7,7-3,*,1/3,/3"
 
-        val cronExpr = second.parse(strExpr)
+        val cronExpr = Parser.second(strExpr)
 
         assert(cronExpr.isRight)
         cronExpr.right.get shouldBe a[Second]
@@ -122,7 +122,7 @@ class ParserSpec extends WordSpec with Parser {
       "minute" in {
         val strExpr = "1,2,3,3-7,7-3,*,1/3,/3"
 
-        val cronExpr = minute.parse(strExpr)
+        val cronExpr = Parser.minute(strExpr)
 
         assert(cronExpr.isRight)
         cronExpr.right.get shouldBe a[Minute]
@@ -137,7 +137,7 @@ class ParserSpec extends WordSpec with Parser {
       "hour" in {
         val strExpr = "1,2,3,3-7,7-3,*,1/3,/3"
 
-        val cronExpr = hour.parse(strExpr)
+        val cronExpr = Parser.hour(strExpr)
 
         assert(cronExpr.isRight)
         cronExpr.right.get shouldBe a[Hour]
@@ -152,7 +152,7 @@ class ParserSpec extends WordSpec with Parser {
       "day of month" in {
         val strExpr = "1,2,3,3-7,7-3,*,1/3,/3,?,L,L-3,3W,LW"
 
-        val cronExpr = dayOfMonth.parse(strExpr)
+        val cronExpr = Parser.dayOfMonth(strExpr)
 
         assert(cronExpr.isRight)
         cronExpr.right.get shouldBe a[DayOfMonth]
@@ -172,7 +172,7 @@ class ParserSpec extends WordSpec with Parser {
       "month" in {
         val strExpr = "1,2,3,3-7,7-3,*,1/3,/3"
 
-        val cronExpr = month.parse(strExpr)
+        val cronExpr = Parser.month(strExpr)
 
         assert(cronExpr.isRight)
         cronExpr.right.get shouldBe a[Month]
@@ -187,7 +187,7 @@ class ParserSpec extends WordSpec with Parser {
       "day of week" in {
         val strExpr = "1,2,3,3-7,7-3,*,1/3,/3,?,L,3L,3#3"
 
-        val cronExpr = dayOfWeek.parse(strExpr)
+        val cronExpr = Parser.dayOfWeek(strExpr)
 
         assert(cronExpr.isRight)
         cronExpr.right.get shouldBe a[DayOfWeek]
@@ -206,7 +206,7 @@ class ParserSpec extends WordSpec with Parser {
       "year" in {
         val strExpr = "1991,1993,2002,1991-2002,2002-1991,*,1991/3,/3"
 
-        val cronExpr = year.parse(strExpr)
+        val cronExpr = Parser.year(strExpr)
 
         assert(cronExpr.isRight)
         cronExpr.right.get shouldBe a[Year]
@@ -229,8 +229,8 @@ class ParserSpec extends WordSpec with Parser {
       val year = "1991,1993,2002,1991-2002,2002-1991,*,1991/3,/3"
 
       "simple" in {
-        val cronExpr1 = Parser.parse(minute + " " + hour + " " + dayOfMonth + " " + month + " " + "?")
-        val cronExpr2 = Parser.parse(minute + " " + hour + " " + "?" + " " + month + " " + dayOfWeek)
+        val cronExpr1 = Parser.cron(minute + " " + hour + " " + dayOfMonth + " " + month + " " + "?")
+        val cronExpr2 = Parser.cron(minute + " " + hour + " " + "?" + " " + month + " " + dayOfWeek)
 
         assert(cronExpr1.isRight)
         cronExpr1.right.get.minute.parts should contain allOf(
@@ -298,8 +298,8 @@ class ParserSpec extends WordSpec with Parser {
       }
 
       "intermediate" in {
-        val cronExpr1 = Parser.parse(second + " " + minute + " " + hour + " " + dayOfMonth + " " + month + " " + "?")
-        val cronExpr2 = Parser.parse(second + " " + minute + " " + hour + " " + "?" + " " + month + " " + dayOfWeek)
+        val cronExpr1 = Parser.cron(second + " " + minute + " " + hour + " " + dayOfMonth + " " + month + " " + "?")
+        val cronExpr2 = Parser.cron(second + " " + minute + " " + hour + " " + "?" + " " + month + " " + dayOfWeek)
 
         assert(cronExpr1.isRight)
         cronExpr1.right.get.second.parts should contain allOf(
@@ -379,8 +379,8 @@ class ParserSpec extends WordSpec with Parser {
       }
 
       "advanced" in {
-        val cronExpr1 = Parser.parse(second + " " + minute + " " + hour + " " + dayOfMonth + " " + month + " " + "?" + " " + year)
-        val cronExpr2 = Parser.parse(second + " " + minute + " " + hour + " " + "?" + " " + month + " " + dayOfWeek + " " + year)
+        val cronExpr1 = Parser.cron(second + " " + minute + " " + hour + " " + dayOfMonth + " " + month + " " + "?" + " " + year)
+        val cronExpr2 = Parser.cron(second + " " + minute + " " + hour + " " + "?" + " " + month + " " + dayOfWeek + " " + year)
 
         assert(cronExpr1.isRight)
         cronExpr1.right.get.second.parts should contain allOf(
@@ -473,11 +473,11 @@ class ParserSpec extends WordSpec with Parser {
     }
   }
 
-  private implicit def parsedToCron[T](parsed: Parsed[Parser.SubExpression[T], Char, String]): Either[Error, T] = {
+  private implicit def parsedToCron[T](parsed: Parsed[Either[Error, T], Char, String]): Either[Error, T] = {
     parsed match {
       case Success(expr, _) => expr
       case Failure(x, y, z) =>
-        Left(Error("Invalid cron expression", Error("Incorrect cron syntax")))
+        Left(Error("Invalid cron expression", Error("Incorrect syntax")))
     }
   }
 }

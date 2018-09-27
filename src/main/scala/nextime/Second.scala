@@ -1,11 +1,15 @@
 package nextime
 
-import validation.Rule
+import nextime.parsing.Parser
+import nextime.validation.Rule
+import nextime.implicits.EitherImplicits._
 
 sealed abstract case class Second(parts: List[SecondPart]) extends MultipartExpression
 
 object Second {
   implicit val bounds: Bounds = Bounds(0, 59)
+
+  def apply(secondExpression: String): Either[Error, Second] = Parser.second(secondExpression)
 
   def apply(head: SecondPart, tail: SecondPart*): Either[Error, Second] = apply(head :: tail.toList)
 
@@ -20,10 +24,9 @@ object Second {
     }
   }
 
-  def unsafe(head: SecondPart, tail: SecondPart*): Second = unsafe(head :: tail.toList)
+  def unsafe(secondExpression: String): Second = apply(secondExpression)
 
-  def unsafe(parts: List[SecondPart]): Second = apply(parts) match {
-    case Right(second) => second
-    case Left(error) => throw error
-  }
+  def unsafe(head: SecondPart, tail: SecondPart*): Second = apply(head :: tail.toList)
+
+  def unsafe(parts: List[SecondPart]): Second = apply(parts)
 }

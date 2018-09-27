@@ -1,11 +1,15 @@
 package nextime
 
+import nextime.parsing.Parser
 import validation.Rule
+import nextime.implicits.EitherImplicits._
 
 sealed abstract case class Year(parts: List[YearPart]) extends MultipartExpression
 
 object Year {
   implicit val bounds: Bounds = Bounds(1979, 2099)
+
+  def apply(yearExpression: String): Either[Error, Year] = Parser.year(yearExpression)
 
   def apply(head: YearPart, tail: YearPart*): Either[Error, Year] = apply(head :: tail.toList)
 
@@ -20,10 +24,9 @@ object Year {
     }
   }
 
-  def unsafe(head: YearPart, tail: YearPart*): Year = unsafe(head :: tail.toList)
+  def unsafe(yearExpression: String): Year = apply(yearExpression)
 
-  def unsafe(parts: List[YearPart]): Year = apply(parts) match {
-    case Right(year) => year
-    case Left(error) => throw error
-  }
+  def unsafe(head: YearPart, tail: YearPart*): Year = apply(head :: tail.toList)
+
+  def unsafe(parts: List[YearPart]): Year = apply(parts)
 }

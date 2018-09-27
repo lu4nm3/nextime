@@ -66,7 +66,9 @@ trait CronEitherInstantiators {
       month,
       dayOfWeek,
       year
-    )((second, minute, hour, dayOfMonth, month, dayOfWeek, year) => Cron(second, minute, hour, dayOfMonth, month, dayOfWeek, year))
+    )((second, minute, hour, dayOfMonth, month, dayOfWeek, year) =>
+      Cron(second, minute, hour, dayOfMonth, month, dayOfWeek, year)
+    )
       .leftMap((errors: NonEmptyList[Error]) => Error("Invalid cron expression", errors.toList))
       .toEither
       .flatMap(Predef.identity)

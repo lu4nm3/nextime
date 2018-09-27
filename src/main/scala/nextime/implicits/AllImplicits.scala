@@ -1,7 +1,7 @@
 package nextime.implicits
 
 trait AllImplicits
-  extends CronImplicits
+  extends StringInterpolatorImplicits
     with AllPartImplicits
     with ValuePartImplicits
     with RangePartImplicits

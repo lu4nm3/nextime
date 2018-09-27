@@ -14,9 +14,7 @@ sealed abstract case class Cron(second: Second,
                                 year: Year) extends Expression with CronLike with NextTime with PreviousTime
 
 object Cron extends CronEitherInstantiators with CronUnsafeInstantiators {
-  def apply(cronExpression: String): Either[Error, Cron] = {
-    Parser.parse(cronExpression)
-  }
+  def apply(cronExpression: String): Either[Error, Cron] = Parser.cron(cronExpression)
 
   private[nextime] def apply(minute: Minute,
                              hour: Hour,
@@ -80,7 +78,7 @@ object Cron extends CronEitherInstantiators with CronUnsafeInstantiators {
 
       Right(
         new Cron(second, innerMinute, innerHour, innerDayOfMonth, innerMonth, innerDayOfWeek, year) {
-          def mkString: String = {
+          val mkString: String = {
             val secondStr = innerSecond.map(s => s"${s.mkString} ").getOrElse("")
             val yearStr = innerYear.map(y => s" ${y.mkString}").getOrElse("")
             s"$secondStr${minute.mkString} ${hour.mkString} ${dayOfMonth.mkString} ${month.mkString} ${dayOfWeek.mkString}$yearStr"

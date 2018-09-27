@@ -1,11 +1,15 @@
 package nextime
 
+import nextime.parsing.Parser
 import validation.Rule
+import nextime.implicits.EitherImplicits._
 
 sealed abstract case class DayOfMonth(parts: List[DayOfMonthPart]) extends MultipartExpression
 
 object DayOfMonth {
   implicit val bounds: Bounds = Bounds(1, 31)
+
+  def apply(dayOfMonthExpression: String): Either[Error, DayOfMonth] = Parser.dayOfMonth(dayOfMonthExpression)
 
   def apply(head: DayOfMonthPart, tail: DayOfMonthPart*): Either[Error, DayOfMonth] = apply(head :: tail.toList)
 
@@ -20,10 +24,9 @@ object DayOfMonth {
     }
   }
 
-  def unsafe(head: DayOfMonthPart, tail: DayOfMonthPart*): DayOfMonth = unsafe(head :: tail.toList)
+  def unsafe(dayOfMonthExpression: String): DayOfMonth = apply(dayOfMonthExpression)
 
-  def unsafe(parts: List[DayOfMonthPart]): DayOfMonth = apply(parts) match {
-    case Right(dayOfMonth) => dayOfMonth
-    case Left(error) => throw error
-  }
+  def unsafe(head: DayOfMonthPart, tail: DayOfMonthPart*): DayOfMonth = apply(head :: tail.toList)
+
+  def unsafe(parts: List[DayOfMonthPart]): DayOfMonth = apply(parts)
 }

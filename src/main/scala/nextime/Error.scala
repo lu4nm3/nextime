@@ -59,9 +59,9 @@ object Error {
       ctxs.map {
         case Ctx(_, aggMsg, errors) => errors match {
           case Nil => Cause(aggMsg)
-          case v :: Nil => UniqueError(aggMsg, v)
-          case v1 :: v2 :: Nil => AggregateError(aggMsg, v1, v2)
-          case v1 :: v2 :: vs => AggregateError(aggMsg, v1, v2, vs: _*)
+          case e :: Nil => UniqueError(aggMsg, e)
+          case e1 :: e2 :: Nil => AggregateError(aggMsg, e1, e2)
+          case e1 :: e2 :: es => AggregateError(aggMsg, e1, e2, es: _*)
         }
       }
     }
