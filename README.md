@@ -272,8 +272,23 @@ this to support other date types.
 
 Most of the time you're able to use types to effectively figure out which multipart expression permutations are 
 supported by a `Cron` expression as well as which part expressions are supported by a particular multipart expression. 
+
 For example, only `DayOfMonth` supports the `LastWeekday` part expression and using `LastWeekday` for any other 
-multipart expression will result in a compilation error.
+multipart expression results in a compilation error:
+
+```scala
+scala> DayOfMonth(LW)
+res0: Either[nextime.Error,nextime.DayOfMonth] = Right(DayOfMonth(List(LastWeekday)))
+
+scala> Hour(LW)
+<console>:15: error: overloaded method value apply with alternatives:
+  (parts: List[nextime.HourPart])Either[nextime.Error,nextime.Hour] <and>
+  (head: nextime.HourPart,tail: nextime.HourPart*)Either[nextime.Error,nextime.Hour] <and>
+  (hourExpression: String)Either[nextime.Error,nextime.Hour]
+ cannot be applied to (nextime.LastWeekday.type)
+       Hour(LW)
+       ^
+```
 
 For the times when this isn't enough, Nextime provides an intricate error system that is used to describe issues that 
 your cron expression and its sub-expressions may have.
