@@ -270,9 +270,10 @@ this to support other date types.
 
 # Errors
 
-Most of the time you're able to use types to effectively figure out which part expressions are supported by a particular 
-multipart expression. For example, only `DayOfMonth` supports the `LastWeekday` part expression and using `LastWeekday` 
-for any other multipart expression will result in a compilation error. 
+Most of the time you're able to use types to effectively figure out which multipart expression permutations are 
+supported by a `Cron` expression as well as which part expressions are supported by a particular multipart expression. 
+For example, only `DayOfMonth` supports the `LastWeekday` part expression and using `LastWeekday` for any other 
+multipart expression will result in a compilation error.
 
 For the times when this isn't enough, Nextime provides an intricate error system that is used to describe issues that 
 your cron expression and its sub-expressions may have.
@@ -297,7 +298,7 @@ Left(nextime.Error$UniqueError:
 })
 ```
 
-Here we see that the top-level error is that we tried to create an invalid minute expression. If you look the cause of,
+Here we see that the top-level error is that we tried to create an invalid minute expression. If you look the cause of
 the error, you will notice that it was due to an invalid numeric value (`-3`) which is out of bounds for the range of 
 values supported by the minute expression (`0-59`).
 
