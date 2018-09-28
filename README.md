@@ -290,8 +290,8 @@ scala> Hour(LW)
        ^
 ```
 
-For the times when this isn't enough, Nextime provides an intricate error system that is used to describe issues that 
-your cron expression and its sub-expressions may have.
+For the times when compilation checks aren't enough, Nextime provides an intricate error system that is used to describe 
+issues that your cron expression and its sub-expressions may have.
 
 You can think of `nextime.Error` as a recursive structure consisting of a main message describing the error along with 1 
 or more causes of the error. Nextime uses the Circe library to print the errors in JSON format for easier inspection.
